@@ -28,6 +28,7 @@ var path      = require("path");
 var Sequelize = require("sequelize");
 // var env       = process.env.STAGE || "local";
 var config    = require('./../config/main')[process.env.STAGE || 'local'];
+console.log(config.DB_MYSQL_DATABASE, process.env.MYSQL_DB_USERNAME, process.env.MYSQL_DB_PASSWORD, '******');
 var sequelize = new Sequelize(config.DB_MYSQL_DATABASE, process.env.MYSQL_DB_USERNAME, process.env.MYSQL_DB_PASSWORD, {
   // host: config.host,
   // port: config.port,
