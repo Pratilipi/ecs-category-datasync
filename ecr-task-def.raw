@@ -1,0 +1,35 @@
+{
+    "family": "$APP_NAME",
+    "networkMode": "bridge",
+    "taskRoleArn": "arn:aws:iam::$AWS_PROJ_ID:role/ecsTaskRolePratilipi",
+    "containerDefinitions": [
+        {
+            "name": "$APP_NAME",
+            "image": "$DOCKER_REPO/$APP_NAME:$APP_VERSION",
+            "cpu": 64,
+            "memoryReservation": 128,
+            "memory": 256,
+            "portMappings": [
+                {
+                    "hostPort": 0,
+                    "containerPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "$PREFIX$STAGE-$APP_NAME",
+                    "awslogs-region": "ap-southeast-1"
+                }
+            }
+        }
+    ],
+    "placementConstraints": [
+        {
+            "expression": "attribute:instance-category-default == true",
+            "type": "memberOf"
+        }
+    ]
+}
