@@ -12,6 +12,7 @@
     "bluebird": "3.5.0",
     "lodash": "4.17.4",
     "mysql2": "1.4.1",
-    "sequelize": "4.7.5"
+    "sequelize": "4.7.5",
+    "aws-sdk": "2.82.0"
   }
 }
