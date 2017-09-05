@@ -18,7 +18,7 @@ module.exports = {
         if(err) {
           reject(err.stack);
         } else {
-          console.log(params);
+          console.log(data);
           for(var i = 0; i < data.Parameters.length; i++) {
             if (data.Parameters[i].Name == externalEndpoints.PARAMETER_STORE_MYSQL_USERNAME) {
               credentials.MYSQL_DB_USERNAME = data.Parameters[i].Value;
