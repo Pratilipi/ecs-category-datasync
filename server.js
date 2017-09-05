@@ -64,7 +64,9 @@ function fetchAndSyncCategoriesData(timestamp) {
 
 parameterStoreAccessor.getMySqlDbCredentials()
   .then(config => {
+    console.log(config);
     Object.assign(process.env, config);
+    console.log(process.env);
     var models = require('./sequelize-models');
     return models.sequelize.authenticate();
   })
