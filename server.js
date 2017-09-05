@@ -4,16 +4,16 @@ var CategoryService;
 var dbUtility = require('./lib/DbUtility')({projectId: process.env.GCP_PROJ_ID, kind: 'PRATILIPI', schema: schemaConfig});
 var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 
-function fetchAndSyncCategoriesData(timestamp) {
+function fetchAndSyncCategoriesData() {
   var filter = null;
   var orderBy = ['_TIMESTAMP_'];
-  if(timestamp) {
+  if(process.env.LAST_UPDATED_TIMESTAMP) {
     var filter = [
-      ['_TIMESTAMP_', '>=', timestamp]
+      ['_TIMESTAMP_', '>=', new Date(process.env.LAST_UPDATED_TIMESTAMP)]
     ];
   }
 
-  dbUtility.query(filter, null, null, 100, orderBy, false)
+  dbUtility.query(filter, null, null, 5, orderBy, false)
     .then(pratilipis => {
       var addPratilipis = [];
       console.log(pratilipis.data.length, 'before filtering');
@@ -30,6 +30,7 @@ function fetchAndSyncCategoriesData(timestamp) {
       for(var i = 0; i < data.length; i++) {
         var pratilipi = data[i];
         // console.log(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS);
+        console.log(`[PRATILIPI_ID]: pratilipi.PRATILIPI_ID`);
         addPratilipis.push(CategoryService.insertCategoriesInPratilipi(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS, pratilipi._TIMESTAMP_));
       }
       return Promise.all(addPratilipis).then(() => {
@@ -38,7 +39,7 @@ function fetchAndSyncCategoriesData(timestamp) {
       })
       .catch((err) => {
         console.log(err);
-        console.log("Failed at this timestamp", timestamp);
+        console.log("Failed at this timestamp", process.env.LAST_UPDATED_TIMESTAMP);
         return Promise.reject();
       });
       // return pratilipis;
