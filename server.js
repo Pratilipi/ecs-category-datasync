@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var schemaConfig = require('./config/PratilipiSchema');
-var CategoryService = require('./Category');
+var CategoryService;
 var dbUtility = require('./lib/DbUtility')({projectId: process.env.GCP_PROJ_ID, kind: 'PRATILIPI', schema: schemaConfig});
 var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 
@@ -64,10 +64,9 @@ function fetchAndSyncCategoriesData(timestamp) {
 
 parameterStoreAccessor.getMySqlDbCredentials()
   .then(config => {
-    console.log(config);
     Object.assign(process.env, config);
-    console.log(process.env);
     var models = require('./sequelize-models');
+    CategoryService = require('./Category');
     return models.sequelize.authenticate();
   })
   .then(() => {
