@@ -47,7 +47,7 @@ function fetchAndSyncCategoriesData(timestamp) {
     .then(pratilipis => {
       console.log(`${pratilipis.data.length} successfully inserted.`);
       if(pratilipis.moreResults) {
-        console.log('More results exist');
+        console.log(`More results exist after timestamp ${timestamp}`);
         setTimeout(function () {
           fetchAndSyncCategoriesData(pratilipis.newTimestamp);
         }, 3000);
