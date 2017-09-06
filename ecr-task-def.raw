@@ -1,7 +1,7 @@
 {
     "family": "$APP_NAME",
     "networkMode": "bridge",
-    "taskRoleArn": "arn:aws:iam::$AWS_PROJ_ID:role/ecsTaskRoleCategoryDataSync",
+    "taskRoleArn": "arn:aws:iam::$AWS_PROJ_ID:role/ecsTaskRolePratilipi",
     "containerDefinitions": [
         {
             "name": "$APP_NAME",

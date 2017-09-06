@@ -13,4 +13,10 @@ config.devo = {
   'DB_MYSQL_PORT': 3306
 }
 
+config.gamma = {
+  'DB_MYSQL_HOST':  'product.cr3p1oy4g8ad.ap-southeast-1.rds.amazonaws.com',
+  'DB_MYSQL_DATABASE': 'pratilipi',
+  'DB_MYSQL_PORT': 3306
+}
+
 module.exports = config;
