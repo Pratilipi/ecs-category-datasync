@@ -4,12 +4,12 @@ var CategoryService;
 var dbUtility = require('./lib/DbUtility')({projectId: process.env.GCP_PROJ_ID, kind: 'PRATILIPI', schema: schemaConfig});
 var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 
-function fetchAndSyncCategoriesData() {
+function fetchAndSyncCategoriesData(timestamp) {
   var filter = null;
   var orderBy = ['_TIMESTAMP_'];
-  if(process.env.LAST_UPDATED_TIMESTAMP) {
+  if(timestamp) {
     var filter = [
-      ['_TIMESTAMP_', '>=', new Date(process.env.LAST_UPDATED_TIMESTAMP)]
+      ['_TIMESTAMP_', '>=', new Date(timestamp)]
     ];
   }
 
@@ -39,7 +39,7 @@ function fetchAndSyncCategoriesData() {
       })
       .catch((err) => {
         console.log(err);
-        console.log("[FAILED] Failed at this timestamp", process.env.LAST_UPDATED_TIMESTAMP);
+        console.log("[FAILED] Failed at this timestamp", timestamp);
         return Promise.reject();
       });
       // return pratilipis;
@@ -71,7 +71,7 @@ parameterStoreAccessor.getMySqlDbCredentials()
     return models.sequelize.authenticate();
   })
   .then(() => {
-    fetchAndSyncCategoriesData();
+    fetchAndSyncCategoriesData(process.env.LAST_UPDATED_TIMESTAMP);
   })
   ;
   // .then(() => {
