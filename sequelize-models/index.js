@@ -36,7 +36,7 @@ var sequelize = new Sequelize(config.DB_MYSQL_DATABASE, process.env.MYSQL_DB_USE
   dialect: 'mysql',
   define: { underscored: true },
   pool: {
-    max: 5,
+    max: 50,
     min: 0,
     idle: 20000,
     acquire: 20000
