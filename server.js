@@ -13,11 +13,11 @@ function fetchAndSyncCategoriesData(timestamp) {
     ];
   }
 
-  dbUtility.query(filter, null, null, 5, orderBy, false)
+  dbUtility.query(filter, null, null, 10, orderBy, false)
     .then(pratilipis => {
       var addPratilipis = [];
       console.log(pratilipis.data.length, 'before filtering');
-
+      pratilipis.newTimestamp = pratilipis.data[pratilipis.data.length - 1]._TIMESTAMP_;
       pratilipis.data = pratilipis.data.filter((pratilipi) => {
         if(['MAGAZINE', 'BOOK'].includes(pratilipi.PRATILIPI_TYPE) && (pratilipi.SUGGESTED_TAGS || pratilipi.TAG_IDS)) {
           console.log(`[WRONG CONTENT_TYPE PRESENT] for pratilipi id ${pratilipi.PRATILIPI_ID}`);
@@ -49,7 +49,7 @@ function fetchAndSyncCategoriesData(timestamp) {
       if(pratilipis.moreResults) {
         console.log('More results exist');
         setTimeout(function () {
-          fetchAndSyncCategoriesData(pratilipis.data[pratilipis.data.length - 1]._TIMESTAMP_);
+          fetchAndSyncCategoriesData(pratilipis.newTimestamp);
         }, 3000);
       } else {
         process.exit();
