@@ -4,6 +4,7 @@ var db = require('./sequelize-models');
 
 module.exports = {
   fkFailedPratilipiIds: [],
+  lengthFailedPratilipiIds: [],
   checkAllSystemCategoriesPresent(pratilipiId, systemCategories) {
     return new Promise(function(resolve, reject) {
       db.Category.count({
@@ -102,6 +103,18 @@ module.exports = {
         categoryIdsForPratilipisCategories = _.concat(categoryIdsForPratilipisCategories, _.map(newCreatedCategories, 'id'));
         return;
       })
+      .catch(err => {
+        if(err[0].errors.message == 'Validation error: Validation len on name failed') //if err is of type length validation failed, {
+          //reject with pratilipiId and type=length validation error
+          return Promise.reject({
+            pratilipiId: pratilipiId,
+            type: 'LENGTH constraint failed',
+            categoryIds: suggestedCategories
+          });
+        } else {
+          return Promise.reject(err);
+        }
+      })
       ;
     } else {
       prSuggestedCategoryInsertion = Promise.resolve();
@@ -137,10 +150,15 @@ module.exports = {
         return transaction;
       })
       .catch(err => {
-        if(err.pratilipiId) {
+        if(err.pratilipiId && err.type == 'FK constraint failed') {
           module.exports.fkFailedPratilipiIds.push(err.pratilipiId);
           console.log('[FK constraint] failed for ' + err.pratilipiId);
           console.log('[FK failed PRATILIPI IDS RIGHT NOW ] are ' + module.exports.fkFailedPratilipiIds);
+          return;
+        } else if(err.pratilipiId && err.type == 'LENGTH constraint failed') {
+          module.exports.lengthFailedPratilipiIds.push(err.pratilipiId);
+          console.log('[LENGTH constraint] failed for ' + err.pratilipiId);
+          console.log('[LENGTH failed PRATILIPI IDS RIGHT NOW ] are ' + module.exports.lengthFailedPratilipiIds);
           return;
         } else {
           return Promise.reject(err);

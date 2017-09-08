@@ -53,12 +53,14 @@ function fetchAndSyncCategoriesData(timestamp) {
         }, 3000);
       } else {
         console.log(`[FK FAILED PRATILIPI IDS TOTAL AFTER SUCCESS] are ${CategoryService.fkFailedPratilipiIds}`);
+        console.log(`[LENGTH FAILED PRATILIPI IDS TOTAL AFTER SUCCESS] are ${CategoryService.lengthFailedPratilipiIds}`);
         process.exit();
       }
     })
     .catch(err => {
       console.log(err, 'Error occured. Bye bye.');
       console.log(`[FK FAILED PRATILIPI IDS TOTAL] are ${CategoryService.fkFailedPratilipiIds}`);
+      console.log(`[LENGTH FAILED PRATILIPI IDS TOTAL] are ${CategoryService.lengthFailedPratilipiIds}`);
       process.exit();
     })
     ;
