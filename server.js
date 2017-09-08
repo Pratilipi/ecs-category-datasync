@@ -52,6 +52,7 @@ function fetchAndSyncCategoriesData(timestamp) {
           fetchAndSyncCategoriesData(pratilipis.newTimestamp);
         }, 3000);
       } else {
+        console.log(`[FK FAILED PRATILIPI IDS TOTAL AFTER SUCCESS] are ${CategoryService.fkFailedPratilipiIds}`);
         process.exit();
       }
     })
