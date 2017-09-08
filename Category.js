@@ -3,6 +3,30 @@ var _ = require('lodash');
 var db = require('./sequelize-models');
 
 module.exports = {
+  fkFailedPratilipiIds: [],
+  checkAllSystemCategoriesPresent(pratilipiId, systemCategories) {
+    return new Promise(function(resolve, reject) {
+      db.Category.count({
+        where: {
+          id: {
+            $in: systemCategories
+          }
+        }
+      })
+      .then(count => {
+        if(count == systemCategories.length) {
+          resolve();
+        } else {
+          reject({
+            pratilipiId: pratilipiId,
+            type: 'FK constraint failed',
+            categoryIds: systemCategories
+          });
+        }
+      })
+      ;
+    });
+  },
   getSystemCategories(language) {
     return db.Category.findAll({
       attributes: ['id', 'name', 'name_en', 'content_type', 'type'],
@@ -85,6 +109,13 @@ module.exports = {
 
     return prSuggestedCategoryInsertion
       .then(() => {
+        if(systemCategories && systemCategories.length) {
+          return module.exports.checkAllSystemCategoriesPresent(pratilipiId, systemCategories);
+        } else {
+          return Promise.resolve();
+        }
+      })
+      .then(() => {
         var transaction = db.sequelize.transaction(function (t) {
           return db.PratilipiCategory.destroy({
             where: {
@@ -104,6 +135,16 @@ module.exports = {
         });
 
         return transaction;
+      })
+      .catch(err => {
+        if(err.pratilipiId) {
+          module.exports.fkFailedPratilipiIds.push(err.pratilipiId);
+          console.log('[FK constraint] failed for ' + err.pratilipiId);
+          console.log('[FK failed PRATILIPI IDS RIGHT NOW ] are ' + module.exports.fkFailedPratilipiIds);
+          return;
+        } else {
+          return Promise.reject(err);
+        }
       })
       ;
   },

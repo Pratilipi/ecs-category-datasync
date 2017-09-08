@@ -57,6 +57,7 @@ function fetchAndSyncCategoriesData(timestamp) {
     })
     .catch(err => {
       console.log(err, 'Error occured. Bye bye.');
+      console.log(`[FK FAILED PRATILIPI IDS TOTAL] are ${CategoryService.fkFailedPratilipiIds}`);
       process.exit();
     })
     ;
