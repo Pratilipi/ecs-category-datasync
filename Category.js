@@ -152,12 +152,12 @@ module.exports = {
       .catch(err => {
         if(err.pratilipiId && err.type == 'FK constraint failed') {
           module.exports.fkFailedPratilipiIds.push(err.pratilipiId);
-          console.log('[FK constraint] failed for ' + err.pratilipiId);
+          console.log('[FK constraint] failed for ' + err.pratilipiId  + ' for category ids ' + err.categoryIds);
           console.log('[FK failed PRATILIPI IDS RIGHT NOW ] are ' + module.exports.fkFailedPratilipiIds);
           return;
         } else if(err.pratilipiId && err.type == 'LENGTH constraint failed') {
           module.exports.lengthFailedPratilipiIds.push(err.pratilipiId);
-          console.log('[LENGTH constraint] failed for ' + err.pratilipiId);
+          console.log('[LENGTH constraint] failed for ' + err.pratilipiId + ' for categories ' + err.categoryIds);
           console.log('[LENGTH failed PRATILIPI IDS RIGHT NOW ] are ' + module.exports.lengthFailedPratilipiIds);
           return;
         } else {

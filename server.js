@@ -13,7 +13,7 @@ function fetchAndSyncCategoriesData(timestamp) {
     ];
   }
 
-  dbUtility.query(filter, null, null, 10, orderBy, false)
+  dbUtility.query(filter, null, null, 50, orderBy, false)
     .then(pratilipis => {
       var addPratilipis = [];
       console.log(pratilipis.data.length, 'before filtering');
@@ -50,7 +50,7 @@ function fetchAndSyncCategoriesData(timestamp) {
         console.log(`More results exist after timestamp ${timestamp}`);
         setTimeout(function () {
           fetchAndSyncCategoriesData(pratilipis.newTimestamp);
-        }, 3000);
+        }, 1000);
       } else {
         console.log(`[FK FAILED PRATILIPI IDS TOTAL AFTER SUCCESS] are ${CategoryService.fkFailedPratilipiIds}`);
         console.log(`[LENGTH FAILED PRATILIPI IDS TOTAL AFTER SUCCESS] are ${CategoryService.lengthFailedPratilipiIds}`);
