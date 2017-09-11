@@ -22,7 +22,7 @@ function removeWrongSystemCategories(systemCategories) {
         console.log(`2. ${wrongSystemCategories} ${returnedCategories}`);
         systemCategories = _.without(systemCategories, ...wrongSystemCategories);
         console.log(`3. ${systemCategories}`);
-        resolve();
+        resolve(systemCategories);
       });
     } else {
       resolve();
@@ -258,7 +258,8 @@ module.exports = {
 
     var categoryIdsForPratilipisCategories;
     return removeWrongSystemCategories(systemCategories)
-    .then(() => {
+    .then((systemCategoriesReturned) => {
+      systemCategories = systemCategoriesReturned;
       console.log(`4. ${systemCategories}`);
       categoryIdsForPratilipisCategories = (systemCategories && systemCategories.length) ? systemCategories : [];
       console.log(`5. ${categoryIdsForPratilipisCategories}`);
