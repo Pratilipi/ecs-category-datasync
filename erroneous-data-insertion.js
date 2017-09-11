@@ -5,7 +5,7 @@ var CategoryService;
 var dbUtility = require('./lib/DbUtility')({projectId: process.env.GCP_PROJ_ID, kind: 'PRATILIPI', schema: schemaConfig});
 var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 var errorPratilipiIds = require('./config/main')[process.env.STAGE || 'local'].WRONG_P_IDS;
-var chunks = _.chunk(errorPratilipiIds, 50);
+var chunks = _.chunk(_.uniq(errorPratilipiIds), 50);
 var currChunkIndex = 0;
 function fetchAndSyncCategoriesData(pratilipiIds) {
 
