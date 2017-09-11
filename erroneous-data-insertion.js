@@ -24,6 +24,9 @@ function fetchAndSyncCategoriesData(pratilipiIds) {
         var pratilipi = data[i];
         // console.log(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS);
         console.log(`[PRATILIPI_ID]: ${pratilipi.PRATILIPI_ID}`);
+        console.log(`${pratilipi.TAG_IDS} ${pratilipi.SUGGESTED_TAGS}`);
+        if(pratilipi.TAG_IDS && pratilipi.TAG_IDS.length)
+          console.log(typeof(pratilipi.TAG_IDS[0]);
         addPratilipis.push(CategoryService.insertCategoriesInPratilipiForErroneousData(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS, pratilipi._TIMESTAMP_));
       }
       return Promise.all(addPratilipis).then(() => {
@@ -56,7 +59,7 @@ parameterStoreAccessor.getMySqlDbCredentials()
     return models.sequelize.authenticate();
   })
   .then(() => {
-    fetchAndSyncCategoriesData([5139253646327808,4866290221056000]);
+      fetchAndSyncCategoriesData([5139253646327808,5758763856297984]);
   })
   ;
   // .then(() => {
