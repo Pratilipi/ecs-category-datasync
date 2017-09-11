@@ -20,7 +20,7 @@ function removeWrongSystemCategories(systemCategories) {
         var returnedCategories = _.map(returnedCategories, 'id');
         var wrongSystemCategories = _.difference(systemCategories, returnedCategories);
         console.log(`2. ${wrongSystemCategories} ${returnedCategories}`);
-        systemCategories = _.without(systemCategories, wrongSystemCategories);
+        systemCategories = _.without(systemCategories, ...wrongSystemCategories);
         console.log(`3. ${systemCategories}`);
         resolve();
       });
