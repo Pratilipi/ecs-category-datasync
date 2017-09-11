@@ -2,6 +2,26 @@ var _ = require('lodash');
 
 var db = require('./sequelize-models');
 
+
+function removeWrongSystemCategories(systemCategories) {
+  return new Promise(function(resolve, reject) {
+    db.Category.findAll({
+      attributes: ['id'],
+      where: {
+        id: {
+          $in: systemCategories
+        },
+        type: 'SYSTEM'
+      },
+      raw: true
+    })
+    .then(returnedCategories => {
+      var wrongSystemCategories = _.difference(systemCategories, returnedCategories);
+      systemCategories = _.without(systemCategories, wrongSystemCategories);
+      resolve();
+    })
+  });
+}
 module.exports = {
   fkFailedPratilipiIds: [],
   lengthFailedPratilipiIds: [],
@@ -218,6 +238,97 @@ module.exports = {
         })
       });
       return pIdGroupedCategories;
+    })
+    ;
+  },
+  insertCategoriesInPratilipiForErroneousData(pratilipiId, language, contentType, systemCategories, suggestedCategories, timestamp) {
+    systemCategories = (systemCategories && systemCategories.length) ? _.uniq(systemCategories) : [];
+    suggestedCategories = (suggestedCategories && suggestedCategories.length) ? suggestedCategories.map(cat => {
+      return cat.substring(0, 30);
+    }) : [];
+
+    var categoryIdsForPratilipisCategories;
+    removeWrongSystemCategories(systemCategories)
+    .then(() => {
+      categoryIdsForPratilipisCategories = (systemCategories && systemCategories.length) ? systemCategories : [];
+      return;
+    })
+    .then(() => {
+      if(suggestedCategories && suggestedCategories.length) {
+        suggestedCategories = suggestedCategories.map(Function.prototype.call, String.prototype.toLowerCase);
+        return db.Category.findAll({
+          attributes: ['id', 'name', 'is_active'],
+          where: {
+            language: language,
+            content_type: contentType,
+            type: 'SUGGESTED',
+            name: {
+              $in: suggestedCategories
+            }
+          },
+          raw: true
+        })
+        .then(existingSuggestedCategories => {
+          var activeExistingSuggestedCategoriesIds = _.map(_.filter(existingSuggestedCategories, 'is_active'), 'id');
+          categoryIdsForPratilipisCategories = _.concat(categoryIdsForPratilipisCategories, activeExistingSuggestedCategoriesIds);
+          return _.difference(suggestedCategories, _.map(existingSuggestedCategories, 'name'));
+        })
+        .then(newSuggestedCategoriesNames => {
+          //bulk create suggested categories
+          var newSuggestedCategories = newSuggestedCategoriesNames.map(name => {
+            return {
+              language: language,
+              name: name,
+              content_type: contentType,
+              type: 'SUGGESTED'
+            };
+          });
+          return db.Category.bulkCreate(newSuggestedCategories, {
+            validate: true
+            // individualHooks: true
+           });
+        })
+        .then(newCreatedCategories => {
+          categoryIdsForPratilipisCategories = _.concat(categoryIdsForPratilipisCategories, _.map(newCreatedCategories, 'id'));
+          return;
+        })
+        .catch(err => {
+          if(err[0].errors.message == 'Validation error: Validation len on name failed') {
+            //reject with pratilipiId and type=length validation error
+            return Promise.reject({
+              pratilipiId: pratilipiId,
+              type: 'LENGTH constraint failed',
+              categoryIds: suggestedCategories
+            });
+          } else {
+            return Promise.reject(err);
+          }
+        })
+        ;
+      } else {
+        return Promise.resolve();
+      }
+    })
+    .then(() => {
+      var transaction = db.sequelize.transaction(function (t) {
+        return db.PratilipiCategory.destroy({
+          where: {
+            pratilipi_id: pratilipiId
+          }
+        }, {transaction: t}).then(affectedRows => {
+          var newPratilipiCategories = categoryIdsForPratilipisCategories.map(categoryId => {
+            return {
+              pratilipi_id: pratilipiId,
+              category_id: categoryId,
+              created_at: timestamp,
+              updated_at: timestamp
+            };
+          });
+          return db.PratilipiCategory.bulkCreate(newPratilipiCategories, {validate: true});
+        }, {transaction: t});
+      });
+
+      return transaction;
     })
     ;
   }

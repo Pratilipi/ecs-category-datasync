@@ -1,0 +1,72 @@
+var Promise = require('bluebird');
+var schemaConfig = require('./config/PratilipiSchema');
+var CategoryService;
+var dbUtility = require('./lib/DbUtility')({projectId: process.env.GCP_PROJ_ID, kind: 'PRATILIPI', schema: schemaConfig});
+var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
+
+function fetchAndSyncCategoriesData(pratilipiIds) {
+
+  dbUtility.list(pratilipiIds)
+    .then(pratilipis => {
+      var addPratilipis = [];
+      console.log(pratilipis.length, 'before filtering');
+      // pratilipis.newTimestamp = pratilipis.data[pratilipis.data.length - 1]._TIMESTAMP_;
+      pratilipis = pratilipis.filter((pratilipi) => {
+        if(['MAGAZINE', 'BOOK'].includes(pratilipi.PRATILIPI_TYPE) && (pratilipi.SUGGESTED_TAGS || pratilipi.TAG_IDS)) {
+          console.log(`[WRONG CONTENT_TYPE PRESENT] for pratilipi id ${pratilipi.PRATILIPI_ID}`);
+        }
+        return ['ARTICLE', 'POEM', 'STORY'].includes(pratilipi.PRATILIPI_TYPE) && ['DRAFTED', 'PUBLISHED'].includes(pratilipi.STATE) ;
+      });
+
+      console.log(pratilipis.length, 'after filtering');
+      var data = pratilipis;
+      for(var i = 0; i < data.length; i++) {
+        var pratilipi = data[i];
+        // console.log(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS);
+        console.log(`[PRATILIPI_ID]: ${pratilipi.PRATILIPI_ID}`);
+        addPratilipis.push(CategoryService.insertCategoriesInPratilipiForErroneousData(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS, pratilipi._TIMESTAMP_));
+      }
+      return Promise.all(addPratilipis).then(() => {
+        //return maybe only timestamp and moreResults;
+        return pratilipis;
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log("[FAILED] Failed ");
+        return Promise.reject();
+      });
+      // return pratilipis;
+    })
+    .then(pratilipis => {
+      console.log(`${pratilipis.length} successfully inserted.`);
+    })
+    .catch(err => {
+      console.log(err, 'Error occured. Bye bye.');
+      process.exit();
+    })
+    ;
+
+}
+
+parameterStoreAccessor.getMySqlDbCredentials()
+  .then(config => {
+    Object.assign(process.env, config);
+    var models = require('./sequelize-models');
+    CategoryService = require('./Category');
+    return models.sequelize.authenticate();
+  })
+  .then(() => {
+    fetchAndSyncCategoriesData([5139253646327808,4866290221056000]);
+  })
+  ;
+  // .then(() => {
+  //   // console.log('authenticated');
+  //   // CategoryService.getSystemCategories('HINDI')
+  //   //   .then(results => {
+  //   //     console.log(results);
+  //   //     return;
+  //   //   });
+  //   db.sequelize.sync();
+  //
+  // })
+  //
