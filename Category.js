@@ -5,23 +5,29 @@ var db = require('./sequelize-models');
 
 function removeWrongSystemCategories(systemCategories) {
   return new Promise(function(resolve, reject) {
-    db.Category.findAll({
-      attributes: ['id'],
-      where: {
-        id: {
-          $in: systemCategories
+    if(systemCategories.length) {
+      db.Category.findAll({
+        attributes: ['id'],
+        where: {
+          id: {
+            $in: systemCategories
+          },
+          type: 'SYSTEM'
         },
-        type: 'SYSTEM'
-      },
-      raw: true
-    })
-    .then(returnedCategories => {
-      var wrongSystemCategories = _.difference(systemCategories, returnedCategories);
-      console.log(`2. ${wrongSystemCategories} ${returnedCategories}`);
-      systemCategories = _.without(systemCategories, wrongSystemCategories);
-      console.log(`3. ${systemCategories}`);
+        raw: true
+      })
+      .then(returnedCategories => {
+        var returnedCategories = _.map(returnedCategories, 'id');
+        var wrongSystemCategories = _.difference(systemCategories, returnedCategories);
+        console.log(`2. ${wrongSystemCategories} ${returnedCategories}`);
+        systemCategories = _.without(systemCategories, wrongSystemCategories);
+        console.log(`3. ${systemCategories}`);
+        resolve();
+      });
+    } else {
       resolve();
-    })
+    }
+
   });
 }
 module.exports = {
