@@ -26,7 +26,7 @@ function fetchAndSyncCategoriesData(pratilipiIds) {
         console.log(`[PRATILIPI_ID]: ${pratilipi.PRATILIPI_ID}`);
         console.log(`${pratilipi.TAG_IDS} ${pratilipi.SUGGESTED_TAGS}`);
         if(pratilipi.TAG_IDS && pratilipi.TAG_IDS.length)
-          console.log(typeof(pratilipi.TAG_IDS[0]);
+          console.log(typeof(pratilipi.TAG_IDS[0]));
         addPratilipis.push(CategoryService.insertCategoriesInPratilipiForErroneousData(pratilipi.PRATILIPI_ID, pratilipi.LANGUAGE, pratilipi.PRATILIPI_TYPE, pratilipi.TAG_IDS, pratilipi.SUGGESTED_TAGS, pratilipi._TIMESTAMP_));
       }
       return Promise.all(addPratilipis).then(() => {
