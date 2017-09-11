@@ -259,7 +259,9 @@ module.exports = {
     var categoryIdsForPratilipisCategories;
     return removeWrongSystemCategories(systemCategories)
     .then(() => {
+      console.log(`4. ${systemCategories}`);
       categoryIdsForPratilipisCategories = (systemCategories && systemCategories.length) ? systemCategories : [];
+      console.log(`5. ${categoryIdsForPratilipisCategories}`);
       return;
     })
     .then(() => {
