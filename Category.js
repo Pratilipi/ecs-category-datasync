@@ -19,9 +19,8 @@ function removeWrongSystemCategories(systemCategories) {
       .then(returnedCategories => {
         var returnedCategories = _.map(returnedCategories, 'id');
         var wrongSystemCategories = _.difference(systemCategories, returnedCategories);
-        console.log(`2. ${wrongSystemCategories} ${returnedCategories}`);
+        console.log(`[WRONG SYSTEM CATEGORIES ARE ] ${wrongSystemCategories} `);
         systemCategories = _.without(systemCategories, ...wrongSystemCategories);
-        console.log(`3. ${systemCategories}`);
         resolve(systemCategories);
       });
     } else {
@@ -251,7 +250,6 @@ module.exports = {
   },
   insertCategoriesInPratilipiForErroneousData(pratilipiId, language, contentType, systemCategories, suggestedCategories, timestamp) {
     systemCategories = (systemCategories && systemCategories.length) ? _.uniq(systemCategories) : [];
-    console.log(`1. ${systemCategories}`);
     suggestedCategories = (suggestedCategories && suggestedCategories.length) ? suggestedCategories.map(cat => {
       return cat.substring(0, 30);
     }) : [];
@@ -260,9 +258,8 @@ module.exports = {
     return removeWrongSystemCategories(systemCategories)
     .then((systemCategoriesReturned) => {
       systemCategories = systemCategoriesReturned;
-      console.log(`4. ${systemCategories}`);
+      console.log(`[RIGHT SYSTEM CATEGORIES ARE] ${systemCategories}`);
       categoryIdsForPratilipisCategories = (systemCategories && systemCategories.length) ? systemCategories : [];
-      console.log(`5. ${categoryIdsForPratilipisCategories}`);
       return;
     })
     .then(() => {

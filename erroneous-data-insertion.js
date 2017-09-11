@@ -1,9 +1,12 @@
 var Promise = require('bluebird');
+var _ = require('lodash');
 var schemaConfig = require('./config/PratilipiSchema');
 var CategoryService;
 var dbUtility = require('./lib/DbUtility')({projectId: process.env.GCP_PROJ_ID, kind: 'PRATILIPI', schema: schemaConfig});
 var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
-
+var errorPratilipiIds = require('./config/main')[process.env.STAGE || 'local'].WRONG_P_IDS;
+var chunks = _.chunk(errorPratilipiIds, 50);
+var currChunkIndex = 0;
 function fetchAndSyncCategoriesData(pratilipiIds) {
 
   dbUtility.list(pratilipiIds)
@@ -42,6 +45,12 @@ function fetchAndSyncCategoriesData(pratilipiIds) {
     })
     .then(pratilipis => {
       console.log(`${pratilipis.length} successfully inserted.`);
+      if(chunks[currChunkIndex]) {
+        fetchAndSyncCategoriesData(chunks[currChunkIndex++]);
+      } else {
+        console.log('FINAL SUCCESS');
+        process.exit();
+      }
     })
     .catch(err => {
       console.log(err, 'Error occured. Bye bye.');
@@ -59,7 +68,7 @@ parameterStoreAccessor.getMySqlDbCredentials()
     return models.sequelize.authenticate();
   })
   .then(() => {
-      fetchAndSyncCategoriesData([5139253646327808,5758763856297984]);
+      fetchAndSyncCategoriesData(chunks[currChunkIndex++]);
   })
   ;
   // .then(() => {
