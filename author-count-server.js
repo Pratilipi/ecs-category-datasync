@@ -101,7 +101,7 @@ function updateAuthorCounts(body, authorId) {
       'User-Id': headers.userId
     }
   };
-  console.log('Author patch request for ' + authorId + ' is ' JSON.stringify(_.pick(authorFactsPatchOptions, ['form'])));
+  console.log('Author patch request for ' + authorId + ' is ' + JSON.stringify(_.pick(authorFactsPatchOptions, ['form'])));
   return httpPromise(authorFactsPatchOptions)
     .catch((err) => {
       console.log('[ERROR RETURNED FOR] ' + authorId + ' ' + err);
