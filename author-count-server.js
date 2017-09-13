@@ -103,10 +103,10 @@ function updateAuthorCounts(body, authorId) {
     uri:  `${process.env.API_END_POINT}/authors/${authorId}`,
     form: body,
     agent: agent,
-    headers: { // TODO: decide what to do in this
-      'Access-Token': process.env.JARVIS_ATOKEN,
-      'User-Id': process.env.JARVIS_USER_ID
-    }
+    // headers: { // TODO: decide what to do in this
+    //   'Access-Token': process.env.JARVIS_ATOKEN,
+    //   'User-Id': process.env.JARVIS_USER_ID
+    // }
   };
   console.log('Author patch request for ' + authorId + ' is ' + JSON.stringify(_.pick(authorFactsPatchOptions, ['form'])));
   return httpPromise(authorFactsPatchOptions)
