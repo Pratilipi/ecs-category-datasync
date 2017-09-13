@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var http = require('http');
 var httpPromise = require('request-promise');
 var _ = require('lodash');
+var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 var agent = new http.Agent({
   keepAlive : true
 });
