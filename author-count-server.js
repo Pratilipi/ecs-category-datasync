@@ -67,7 +67,7 @@ function backfillAuthorCounts(timestamp) {
           console.log(`More results exist after timestamp ${pratilipis.newTimestamp}`);
           setTimeout(function () {
             backfillAuthorCounts(pratilipis.newTimestamp);
-          }, 10000);
+          }, 5000);
         } else {
           console.log(`[FAILED AUTHOR IDS TOTAL AFTER SUCCESS] are ${failedAuthorIds}`);
           process.exit();
@@ -102,12 +102,16 @@ function updateAuthorCounts(body, authorId) {
     method: 'PATCH',
     uri:  `${process.env.API_END_POINT}/authors/${authorId}`,
     form: body,
-    agent: agent,
-    // headers: { // TODO: decide what to do in this
-    //   'Access-Token': process.env.JARVIS_ATOKEN,
-    //   'User-Id': process.env.JARVIS_USER_ID
-    // }
+    agent: agent
   };
+
+  if(process.env.STAGE != 'devo') {
+    authorFactsPatchOptions.headers = {
+      'Access-Token': process.env.JARVIS_ATOKEN,
+      'User-Id': process.env.JARVIS_USER_ID
+    };
+  }
+
   console.log('Author patch request for ' + authorId + ' is ' + JSON.stringify(_.pick(authorFactsPatchOptions, ['form'])));
   return httpPromise(authorFactsPatchOptions)
     .catch((err) => {
