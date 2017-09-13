@@ -88,7 +88,13 @@ function backfillAuthorCounts(timestamp) {
 
 }
 
-backfillAuthorCounts(process.env.LAST_TS);
+parameterStoreAccessor.getJarvisCredentials()
+  .then(config => {
+    Object.assign(process.env, config);
+    backfillAuthorCounts(process.env.LAST_TS);
+  })
+  ;
+
 
 function updateAuthorCounts(body, authorId) {
   var authorFactsPatchOptions = {
@@ -97,8 +103,8 @@ function updateAuthorCounts(body, authorId) {
     form: body,
     agent: agent,
     headers: { // TODO: decide what to do in this
-      'Access-Token': headers.accessToken,
-      'User-Id': headers.userId
+      'Access-Token': process.env.JARVIS_ATOKEN,
+      'User-Id': process.env.JARVIS_USER_ID
     }
   };
   console.log('Author patch request for ' + authorId + ' is ' + JSON.stringify(_.pick(authorFactsPatchOptions, ['form'])));

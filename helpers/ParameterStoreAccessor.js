@@ -30,5 +30,32 @@ module.exports = {
 
       });
     });
+  },
+  getJarvisCredentials() {
+    return new Promise(function(resolve, reject) {
+      var params = {
+        Names: [
+          externalEndpoints.PARAMETER_STORE_JARVIS_USERNAME,
+          externalEndpoints.PARAMETER_STORE_JARVIS_ATOKEN
+        ],
+        WithDecryption: true
+      };
+      var credentials = {};
+      ssm.getParameters(params, function(err, data) {
+        if(err) {
+          reject(err.stack);
+        } else {
+          for(var i = 0; i < data.Parameters.length; i++) {
+            if (data.Parameters[i].Name == externalEndpoints.PARAMETER_STORE_JARVIS_USERNAME) {
+              credentials.JARVIS_USER_ID = data.Parameters[i].Value;
+            } else if (data.Parameters[i].Name == externalEndpoints.PARAMETER_STORE_JARVIS_ATOKEN) {
+              credentials.JARVIS_ATOKEN = data.Parameters[i].Value;
+            }
+          }
+          resolve(credentials);
+        }
+
+      });
+    });
   }
 };
