@@ -7,8 +7,8 @@ COPY config config
 COPY helpers helpers
 COPY sequelize-models sequelize-models
 COPY Category.js Category.js
-COPY server.js .
-COPY erroneous-data-insertion.js .
-
+#COPY server.js .
+#COPY erroneous-data-insertion.js .
+COPY author-count-server.js .
 CMD [ "npm", "start" ]
 # CMD ["node", "/usr/src/app/node_modules/.bin/mocha"]

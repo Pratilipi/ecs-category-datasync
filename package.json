@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node erroneous-data-insertion.js"
+    "start": "node author-count-server.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "lodash": "4.17.4",
     "mysql2": "1.4.1",
     "sequelize": "4.7.5",
-    "aws-sdk": "2.82.0"
+    "aws-sdk": "2.82.0",
+    "request-promise": "4.2.1"
   }
 }
