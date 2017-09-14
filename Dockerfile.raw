@@ -5,10 +5,12 @@ RUN npm install
 
 COPY config config
 COPY helpers helpers
+COPY json-data json-data
 COPY sequelize-models sequelize-models
-COPY Category.js Category.js
+COPY CategoryIngestionService.js CategoryIngestionService.js
 #COPY server.js .
 #COPY erroneous-data-insertion.js .
-COPY author-count-server.js .
+#COPY author-count-server.js .
+COPY category-insertion.js .
 CMD [ "npm", "start" ]
 # CMD ["node", "/usr/src/app/node_modules/.bin/mocha"]

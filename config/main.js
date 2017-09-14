@@ -8,7 +8,7 @@ config.local = {
 };
 
 config.devo = {
-  'DB_MYSQL_HOST' : 'ecs-devo-user-activity.ctl0cr5o3mqq.ap-southeast-1.rds.amazonaws.com',
+  'DB_MYSQL_HOST' : 'ecs-devo-db.ctl0cr5o3mqq.ap-southeast-1.rds.amazonaws.com',
   'DB_MYSQL_DATABASE': 'pratilipi',
   'DB_MYSQL_PORT': 3306,
   'WRONG_P_IDS' : [5139253646327808,5758763856297984]

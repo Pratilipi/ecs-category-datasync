@@ -31,7 +31,7 @@ var config    = require('./../config/main')[process.env.STAGE || 'local'];
 var sequelize = new Sequelize(config.DB_MYSQL_DATABASE, process.env.MYSQL_DB_USERNAME, process.env.MYSQL_DB_PASSWORD, {
   // host: config.host,
   // port: config.port,
-  logging: false,
+  // logging: false,
   host: config.DB_MYSQL_HOST,
   dialect: 'mysql',
   define: { underscored: true },
