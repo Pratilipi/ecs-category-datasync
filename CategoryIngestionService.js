@@ -29,7 +29,7 @@ module.exports = {
   markSystemCategoriesAsSuggested(categoryIds) {
     categoryIds = _.map(categoryIds, 'id');
     return db.Category.update(
-      { type: 'SUGGESTED' }, /* set attributes' value */,
+      { type: 'SUGGESTED' },
       {
         where: {
           id: {
@@ -59,7 +59,7 @@ module.exports = {
       .then(categoryObject => {
         return categoryObject.update({
           name: name
-        };
+        });
       });
 
       prCategoriesUpdate.push(prUpdate);
