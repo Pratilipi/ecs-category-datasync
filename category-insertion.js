@@ -5,12 +5,12 @@ var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 var CategoryService;
 function startInsertion() {
   CategoryService.addNewSystemCategories(pratilipisToAdd)
-    .then(() => {
-      return CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
-    })
-    .then(() => {
-      return CategoryService.updateNames(pratilipisToUpdate);
-    })
+    // .then(() => {
+    //   return CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
+    // })
+    // .then(() => {
+    //   return CategoryService.updateNames(pratilipisToUpdate);
+    // })
     .then(() => {
       console.log('All categories successfully updated.');
       process.exit();
