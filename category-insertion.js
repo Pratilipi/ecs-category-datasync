@@ -1,7 +1,7 @@
 const pratilipisToAdd = require('./json-data/added_categories');
 const pratilipisToUpdate = require('./json-data/updated_categories');
 const pratilipisToDelete = require('./json-data/deleted_categories');
-
+var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 function startInsertion() {
   CategoryService.addNewSystemCategories(pratilipisToAdd)
     .then(() => {
