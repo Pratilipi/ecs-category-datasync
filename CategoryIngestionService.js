@@ -27,7 +27,9 @@ module.exports = {
   },
 
   markSystemCategoriesAsSuggested(categoryIds) {
-    categoryIds = _.map(categoryIds, 'id');
+    categoryIds = _.map(categoryIds, (category) => {
+      return parseInt(category.id);
+    });
     return db.Category.update(
       { type: 'SUGGESTED' },
       {
