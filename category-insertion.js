@@ -6,7 +6,7 @@ var CategoryService;
 function startInsertion() {
     // CategoryService.updateNames(pratilipisToUpdate)
   // CategoryService.addNewSystemCategories(pratilipisToAdd)
-    CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
+    CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete)
     // .then(() => {
     //   return CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
     // })
