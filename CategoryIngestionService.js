@@ -57,8 +57,9 @@ module.exports = {
 
       var prUpdate = db.Category.findById(id)
       .then(categoryObject => {
+        var nameToUpdate = _.find(categoriesData, { 'id': categoryObject.get('id') }).name;
         return categoryObject.update({
-          name: name
+          name: nameToUpdate
         });
       });
 
