@@ -58,8 +58,8 @@ module.exports = {
       var prUpdate = db.Category.findById(id)
       .then(categoryObject => {
         console.log(categoryObject.get({plain:true}));
-        console.log(categoryObject.get({plain:true}).id);
-        console.log(_.find(categoriesData, { 'id': categoryObject.get({plain:true}).id }));
+        console.log((categoryObject.get({plain:true}).id).toString());
+        console.log(_.find(categoriesData, { 'id': (categoryObject.get({plain:true}).id).toString() }));
         var nameToUpdate = _.find(categoriesData, { 'id': categoryObject.get({plain:true}).id }).name;
         return categoryObject.update({
           name: nameToUpdate
