@@ -17,7 +17,7 @@ module.exports = {
      .then(newCategories => {
        var newIds = _.map(newCategories, 'id');
        console.log(`${newIds.length} categories inserted with ids ${newIds}`);
-       return newids;
+       return newIds;
      })
      .catch(err => {
        console.log(`[Error occured in creating categories] ${err}`);

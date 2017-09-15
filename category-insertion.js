@@ -4,7 +4,8 @@ const pratilipisToDelete = require('./json-data/deleted_categories');
 var parameterStoreAccessor = require('./helpers/ParameterStoreAccessor');
 var CategoryService;
 function startInsertion() {
-  CategoryService.addNewSystemCategories(pratilipisToAdd)
+    CategoryService.updateNames(pratilipisToUpdate)
+  // CategoryService.addNewSystemCategories(pratilipisToAdd)
     // .then(() => {
     //   return CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
     // })
