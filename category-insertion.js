@@ -6,7 +6,7 @@ var CategoryService;
 function startInsertion() {
     // CategoryService.updateNames(pratilipisToUpdate)
   // CategoryService.addNewSystemCategories(pratilipisToAdd)
-    CategoryService.CategoryService.addNewSystemCategories(pratilipisToAdd)
+    CategoryService..addNewSystemCategories(pratilipisToAdd)
     .then(() => {
         console.log('All categories successfully added.');
          return CategoryService.updateNames(pratilipisToUpdate);
