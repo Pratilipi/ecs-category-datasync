@@ -42,7 +42,7 @@ module.exports = {
       }
     })
     .catch(err => {
-      console.log(typeof error);
+      console.log(typeof err);
       console.log(err);
 
       if(err) {
