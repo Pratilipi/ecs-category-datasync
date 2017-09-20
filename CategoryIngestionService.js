@@ -42,10 +42,10 @@ module.exports = {
       }
     })
     .catch(err => {
-      console.log(typeof err);
+      console.log(typeof err, typeof err.errors[0], typeof err.errors[0].type);
       console.log(err);
 
-      if(err) {
+      if(err.errors[0].type == 'unique violation') {
         return db.Category.findById(categoryId)
           .then(categoryObject => {
             var categoryPlainObject = categoryObject.get({plain: true});
