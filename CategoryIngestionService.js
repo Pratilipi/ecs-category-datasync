@@ -26,29 +26,116 @@ module.exports = {
      ;
   },
 
+  markSystemCategoryAsSuggested(categoryId) {
+    //change type to suggested where id = id
+    //if uniqueness constraint fails, find the system category object,
+    //find suggested category id where language, content_type, name are same as system,
+    //update p_c , changing suggested category id with systme category id,
+    //update sugg category to become inactive
+    //finally update systme category to suggested
+    console.log(`[1. mark ${categoryId} as suggested]`);
+    return db.Category.update({
+      type: 'SUGGESTED'
+    }, {
+      where: {
+        id: categoryId
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      if(err) {
+        return db.findById(categoryId)
+          .then(categoryObject => {
+            var categoryPlainObject = categoryObject.get({plain: true});
+            console.log(`[2. system category object is ${JSON.stringify(categoryPlainObject)}]`);
+            return db.Category.findOne({
+              where: {
+                language: categoryPlainObject.language,
+                content_type: categoryPlainObject.content_type,
+                type: 'SUGGESTED',
+                name: categoryPlainObject.name,
+                is_active: true
+              },
+              raw: true
+            })
+            ;
+          })
+          .then(suggCategoryObject => {
+            console.log(`[3. suggested category object is ${JSON.stringify(suggCategoryObject)}]`);
+            var suggCategoryId = suggCategoryObject.id;
+            var transaction = db.sequelize.transaction(function (t) {
+              return db.PratilipiCategory.update({
+                category_id: categoryId
+              }, {
+                where: {
+                  category_id: suggCategoryId
+                }
+              }, {transaction: t})
+                .then(affectedRows => {
+                  console.log(`[4. Updated ${affectedRows} rows in p_c table]`);
+                  return db.Category.update({
+                    is_active: false
+                  }, {
+                    where: {
+                      id: suggCategoryId
+                    }
+                  });
+              }, {transaction: t})
+              .then((affectedRows) => {
+                console.log(`[5. Updated ${affectedRows} rows in c table]`);
+                return db.Category.update({
+                  type: 'SUGGESTED'
+                }, {
+                  where: {
+                    id: categoryId
+                  }
+                })
+              }, {transaction: t});
+            });
+
+            return transaction;
+          })
+      } else {
+        return Promise.reject(err);
+      }
+    })
+  },
+
   markSystemCategoriesAsSuggested(categoryIds) {
     categoryIds = _.map(categoryIds, (category) => {
       return parseInt(category.id);
     });
-    return db.Category.update(
-      { type: 'SUGGESTED' },
-      {
-        where: {
-          id: {
-            $in: categoryIds
-          }
-        }
-      }
-    )
-    .spread((affectedCount, affectedRows) => {
-      console.log(`${affectedCount} rows changed to suggested`);
-      return affectedCount;
-    })
-    .catch(err => {
-      console.log(`[Error occured in deleting categories] ${err}`);
-      return Promise.reject(err);
-    });
-    ;
+
+    var prChanges = [];
+
+    for(var i=0; i<categoryIds.length; i++) {
+      prChanges.push(module.exports.markSystemCategoryAsSuggested(categoryIds[i]));
+    }
+
+    return Promise.all(prChanges)
+      .catch(err => {
+        console.log(`[Error occured in deleting categories] ${err}`);
+        return Promise.reject(err);
+      });
+
+    // return db.Category.update(
+    //   { type: 'SUGGESTED' },
+    //   {
+    //     where: {
+    //       id: {
+    //         $in: categoryIds
+    //       }
+    //     }
+    //   }
+    // )
+    // .spread((affectedCount, affectedRows) => {
+    //   console.log(`${affectedCount} rows changed to suggested`);
+    //   return affectedCount;
+    // })
+    // .catch(err => {
+    //   console.log(`[Error occured in deleting categories] ${err}`);
+    //   return Promise.reject(err);
+    // });
   },
 
   updateNames(categoriesData) {
