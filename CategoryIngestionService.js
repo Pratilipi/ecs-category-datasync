@@ -42,9 +42,11 @@ module.exports = {
       }
     })
     .catch(err => {
+      console.log(typeof error);
       console.log(err);
+
       if(err) {
-        return db.findById(categoryId)
+        return db.Category.findById(categoryId)
           .then(categoryObject => {
             var categoryPlainObject = categoryObject.get({plain: true});
             console.log(`[2. system category object is ${JSON.stringify(categoryPlainObject)}]`);
