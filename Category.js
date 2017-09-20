@@ -131,6 +131,7 @@ module.exports = {
         return;
       })
       .catch(err => {
+        console.log(err);
         if(err[0].errors.message == 'Validation error: Validation len on name failed') {
           //reject with pratilipiId and type=length validation error
           return Promise.reject({
