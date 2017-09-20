@@ -6,15 +6,15 @@ var CategoryService;
 function startInsertion() {
     // CategoryService.updateNames(pratilipisToUpdate)
   // CategoryService.addNewSystemCategories(pratilipisToAdd)
-    CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete)
-    // .then(() => {
-    //     console.log('All categories successfully added.');
-    //      return CategoryService.updateNames(pratilipisToUpdate);
-    // })
-    // .then(() => {
-    //   console.log('All categories successfully updated.');
-    //   return CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
-    // })
+    CategoryService.addNewSystemCategories(pratilipisToAdd)
+    .then(() => {
+        console.log('All categories successfully added.');
+         return CategoryService.updateNames(pratilipisToUpdate);
+    })
+    .then(() => {
+      console.log('All categories successfully updated.');
+      return CategoryService.markSystemCategoriesAsSuggested(pratilipisToDelete);
+    })
     .then(() => {
       console.log('All categories successfully deleted.');
       process.exit();
