@@ -3,6 +3,7 @@ FROM $DOCKER_REPO/node:8.0.0
 COPY package.json .
 RUN npm install
 
+COPY readCountCorrection readCountCorrection
 COPY config config
 COPY helpers helpers
 COPY json-data json-data
