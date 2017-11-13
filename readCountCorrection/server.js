@@ -12,7 +12,7 @@ var pratilipiDataChunks = _.chunk(pratilipiReadCountData, 10);
 var currChunkNo = 0;
 var failedPratilipiIds = [];
 
-startRCFix(pratilipiDataChunk) {
+function startRCFix(pratilipiDataChunk) {
 
   var prArray = [];
   for(var i=0; i<pratilipiDataChunk.length; i++) {
