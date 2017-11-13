@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var http = require('http');
 var httpPromise = require('request-promise');
 var _ = require('lodash');
-// var parameterStoreAccessor = require('./../helpers/ParameterStoreAccessor');
+var parameterStoreAccessor = require('./../helpers/ParameterStoreAccessor');
 var agent = new http.Agent({
   keepAlive : true
 });
@@ -34,17 +34,17 @@ function startRCFix(pratilipiDataChunk) {
 }
 
 
-// parameterStoreAccessor.getJarvisCredentials()
-//   .then(config => {
-//     Object.assign(process.env, config);
+parameterStoreAccessor.getJarvisCredentials()
+  .then(config => {
+    Object.assign(process.env, config);
     startRCFix(pratilipiDataChunks[currChunkNo]);
-  // })
-  // ;
+  })
+  ;
 
 function patchPratilipiRC(pratilipiObj) {
   var pratilipiPatchOptions = {
     method: 'PATCH',
-    uri:  `internal-gamma-lb-pvt-482748674.ap-southeast-1.elb.amazonaws.com/pratilipis/${pratilipiObj.pratilipi_id}`,
+    uri:  `${process.env.API_END_POINT}/pratilipis/${pratilipiObj.pratilipi_id}`,
     form: {
       readCount: pratilipiObj.new_rc
     },
@@ -52,7 +52,7 @@ function patchPratilipiRC(pratilipiObj) {
   };
 
   if(process.env.STAGE != 'devo') {
-    authorFactsPatchOptions.headers = {
+    pratilipiPatchOptions.headers = {
       'Access-Token': process.env.JARVIS_ATOKEN,
       'User-Id': process.env.JARVIS_USER_ID
     };
